@@ -1,6 +1,3 @@
-########################################################################################################
-# The RWKV Language Model - https://github.com/BlinkDL/RWKV-LM
-########################################################################################################
 
 import os, math, importlib
 import torch
@@ -34,7 +31,7 @@ if os.environ["RWKV_JIT_ON"] == "1":
 from torch.utils.cpp_extension import load
 
 HEAD_SIZE = int(os.environ["RWKV_HEAD_SIZE_A"])
-wkv6_cuda = load(name="wkv6", sources=["/lab/Lxh/yan/Condition_Generation/molgpt-main/Pretrained-RWKV_TS/cuda/wkv6_op.cpp", f"/lab/Lxh/yan/Condition_Generation/molgpt-main/Pretrained-RWKV_TS/cuda/wkv6_cuda.cu"],
+wkv6_cuda = load(name="wkv6", sources=["cuda/wkv6_op.cpp", f"cuda/wkv6_cuda.cu"],
                     verbose=True, extra_cuda_cflags=["-res-usage", "--use_fast_math", "-O3", "-Xptxas -O3", "--extra-device-vectorization", f"-D_N_={HEAD_SIZE}", f"-D_T_={int(os.environ['RWKV_CTXLEN'])}"])
     
 class WKV_6(torch.autograd.Function):
