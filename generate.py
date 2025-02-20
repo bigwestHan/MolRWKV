@@ -33,7 +33,6 @@ import pytorch_lightning as pl
 #guacamol: 2
 set_seed(12)
 
-# /usr/local/miniconda3/envs/bighan2/bin/python /lab/Lxh/yan/Condition_Generation/molgpt-main/Pretrained-RWKV_TS/generate.py --model_weight rwkv_cnn1 --data_name moses2 --csv_name rwkv_cnn1 --vocab_size 27 --block_size 54
 # python generate.py --model_weight moses_scaf_wholeseq_qed.pt --props qed --scaffold --data_name moses2 --csv_name debug --gen_size 1000 --vocab_size 94 --block_size 100
 
 if __name__ == '__main__':
@@ -271,7 +270,7 @@ if __name__ == '__main__':
         #with open(f'{args.data_name}_stoi.json', 'w') as f:
         #         json.dump(stoi, f)
 
-        stoi = json.load(open(f'/lab/Lxh/yan/Condition_Generation/molgpt-main/{args.data_name}_stoi.json', 'r'))
+        stoi = json.load(open(f'{args.data_name}_stoi.json', 'r'))
 
         #itos = { i:ch for i,ch in enumerate(chars) }
         itos = { i:ch for ch,i in stoi.items() }
@@ -285,12 +284,7 @@ if __name__ == '__main__':
 
         model = MyRWKV(args)
 
-        # checkpoint_path='/lab/Lxh/yan/checkpoints/best-model-epoch=05-val_loss=0.31-v2.ckpt/checkpoint/mp_rank_00_model_states.pt'
-        # checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
-        # # 从状态字典中提取模型参数
-        # model_state_dict = checkpoint['module']
-        # model.load_state_dict(model_state_dict)
-        model.load_state_dict(torch.load(f'/lab/Lxh/yan/Condition_Generation/molgpt-main/RWKV2/{args.model_weight}.pt'))
+        model.load_state_dict(torch.load(f'RWKV2/{args.model_weight}.pt'))
         model.to('cuda')
         print('Model loaded')
 
@@ -334,7 +328,7 @@ if __name__ == '__main__':
         if args.scaffold:
             scaf_condition = ['CC1COC2=C3N1C=C(C(=O)C3=CC(=C2N4CCN(CC4)C)F)C(=O)O ']
             # "O=C(N1CCc2c(F)ccc(F)c2C1)C1(O)Cc2ccccc2C1 ,O=C(C1Cc2ccccc2C1)N1CCc2ccccc2C1
-        #     df = pd.read_csv('/lab/Lxh/yan/Condition_Generation/molgpt-main/datasets/zinc_gen_scaffold.csv')
+        #     df = pd.read_csv('datasets/zinc_gen_scaffold.csv')
         #     # 随机选择100个条目
         #     random_smiles = df.sample(n=100,random_state=6)
         #     # 将选中的scaffold_smiles保存到list中
@@ -364,7 +358,7 @@ if __name__ == '__main__':
                         # for c in [[2.0, 40.0, 2.0], [2.0, 40.0, 4.0], [6.0, 40.0, 4.0], [6.0, 40.0, 2.0], [6.0, 80.0, 4.0], [2.0, 80.0, 4.0], [2.0, 80.0, 2.0], [6.0, 80.0, 2.0]]:
                         # for c in [40.0, 80.0, 120.0]:
 
-        data = pd.read_csv('/lab/Lxh/yan/Condition_Generation/molgpt-main/datasets/' + args.csv_name + '.csv')
+        data = pd.read_csv('datasets/' + args.csv_name + '.csv')
         data = data.dropna(axis=0).reset_index(drop=True)
         # data = data.sample(frac = 0.1).reset_index(drop=True)
         data.columns = data.columns.str.lower()
@@ -680,7 +674,7 @@ if __name__ == '__main__':
 
 
         results = pd.concat(all_dfs)
-        results.to_csv('/lab/Lxh/yan/Condition_Generation/molgpt-main/results1/' + args.csv_name + '.csv', index = False)
+        results.to_csv('results1/' + args.csv_name + '.csv', index = False)
 
         # unique_smiles = list(set(results['smiles']))
         # canon_smiles = [canonic_smiles(s) for s in results['smiles']]
