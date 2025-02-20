@@ -219,7 +219,7 @@ if __name__ == '__main__':
         context = "C"
         # context=context + str('<')*(args.max_len - len(regex.findall(context)))
 
-        data = pd.read_csv('/lab/Lxh/yan/Condition_Generation/molgpt-main/datasets/'+args.data_name + '.csv')
+        data = pd.read_csv('datasets/'+args.data_name + '.csv')
         data = data.dropna(axis=0).reset_index(drop=True)
         data.columns = data.columns.str.lower()
 

@@ -175,7 +175,6 @@ if __name__ == "__main__":
     from smiles_to_graph import GraphDataset,my_collate_fn
     import math
     import re
-    from CharRNN import MyRNN
     from model_cnn_gnn_uni import MyRWKV
     from trainer import train_callback
 
@@ -286,7 +285,7 @@ if __name__ == "__main__":
                            persistent_workers=False, drop_last=True)
     
     from pytorch_lightning.loggers import CSVLogger
-    logger = CSVLogger("Pretrained-RWKV_TS/logs", name=args.exp_name)
+    logger = CSVLogger("logs", name=args.exp_name)
 
     current_datetime = datetime.datetime.now()
     # 设置 ModelCheckpoint 回调函数
