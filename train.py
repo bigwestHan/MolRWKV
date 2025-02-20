@@ -1,14 +1,9 @@
-########################################################################################################
-# The RWKV Language Model - https://github.com/BlinkDL/RWKV-LM
-########################################################################################################
-
 
 """guacamol:maxlen:100,scafold_max_len:100,vocab_size:95,n_embd:512"""
 """moses:maxlen:54,scafold_max_len:100,vocab_size:27,n_embd:256"""
 """BBBP:Max len:  232
 Scaffold max len:  155,vocab_size:72,n_embd:256"""
 
-'''/usr/local/miniconda3/envs/bighan2/bin/python /lab/Lxh/yan/Condition_Generation/molgpt-main/Pretrained-RWKV_TS/train.py --run_name guacamol_rwkv_cnn_sas_logp_tpsa --data_name guacamol2 --vocab_size 95 --batch_size 100 --max_len 100 --scaffold_maxlen 100'''
 import logging
 logging.basicConfig(level=logging.INFO)
 
@@ -187,27 +182,18 @@ if __name__ == "__main__":
     model = MyRWKV(args)
     # model = model.half()
 
-    # checkpoint_path='/lab/Lxh/yan/checkpoints/best-model-epoch=04-val_loss=0.33.ckpt/checkpoint/mp_rank_00_model_states.pt'
-    # checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
-    # # 从状态字典中提取模型参数
-    # model_state_dict = checkpoint['module']
-    # model.load_state_dict(model_state_dict)
-    # model.load_state_dict(torch.load(f'/lab/Lxh/yan/Condition_Generation/molgpt-main/RWKV/{args.model_weight}.pt'))
-    # model.to('cuda')
-    # print('Model loaded')
 
-    # 如果你想要更详细的信息，包括参数的名称
     # for name, param in model.named_parameters():
     #     print(f"{name}: {param.dtype}")
     if args.model_path:
-        model.load_state_dict(torch.load(f'/lab/Lxh/yan/Condition_Generation/molgpt-main/RWKV1/{args.model_path}.pt'))
+        model.load_state_dict(torch.load(f'RWKV1/{args.model_path}.pt'))
         model.to('cuda')
         print('Model loaded')
     if args.freeze_rwkv > 0:
         model.freeze_rwkv()
 
 
-    data = pd.read_csv('/lab/Lxh/yan/Condition_Generation/molgpt-main/datasets/' + args.data_name + '.csv')
+    data = pd.read_csv('datasets/' + args.data_name + '.csv')
     data = data.dropna(axis=0).reset_index(drop=True)
     # data = data.sample(frac = 0.1).reset_index(drop=True)
     data.columns = data.columns.str.lower()
@@ -300,7 +286,7 @@ if __name__ == "__main__":
                            persistent_workers=False, drop_last=True)
     
     from pytorch_lightning.loggers import CSVLogger
-    logger = CSVLogger("/lab/Lxh/yan/Condition_Generation/molgpt-main/Pretrained-RWKV_TS/logs", name=args.exp_name)
+    logger = CSVLogger("Pretrained-RWKV_TS/logs", name=args.exp_name)
 
     current_datetime = datetime.datetime.now()
     # 设置 ModelCheckpoint 回调函数
@@ -320,7 +306,7 @@ if __name__ == "__main__":
     trainer.fit(model, train_loader, val_loader)
 
     # 保存模型的 state_dict
-    torch.save(model.state_dict(), f'/lab/Lxh/yan/Condition_Generation/molgpt-main/RWKV2/{args.run_name}.pt')
+    torch.save(model.state_dict(), f'RWKV2/{args.run_name}.pt')
 
     # 记录结束时间
     end_time = time.time()
